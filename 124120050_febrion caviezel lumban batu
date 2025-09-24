@@ -1,0 +1,21 @@
+def hitung_total(harga, jumlah, diskon=0, pajak=0):
+    total = harga * jumlah 
+    if diskon > 0:
+        total = total - (total * (diskon / 100))
+    if pajak > 0:
+         total = total + (total * (pajak / 100))
+    return total
+
+harga = int(input("Berapa Nominal Harga yang Kamu beli ? (Rp):"))
+jumlah = int(input("Berapa Jumlah Barang yang kamu beli ?:"))
+diskon = int(input("berapa diskon yang kamu inginkan ? (%) [0 jika tidak ada]:"))
+pajak = int(input("Masukkan pajak PPN (%) [0 jika tidak ada] : "))
+
+total = hitung_total(harga, jumlah, diskon, pajak)
+print("Total Belanja kamu bayar = Rp", total)
+
+bayar = int(input("Masukkan jumlah uang yang kamu bayarkan : "))
+if bayar >= total:
+    print("nih kembalian kamu ada = Rp", bayar - total)
+else:
+    print("bentar bang Uangmu kurang Rp", total - bayar, "lagi")
