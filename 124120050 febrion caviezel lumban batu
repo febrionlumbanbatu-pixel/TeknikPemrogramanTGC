@@ -1,0 +1,33 @@
+#file 1 : konversi.py
+def c_to_f(c):
+    return (c * 9/5) + 32
+
+def f_to_c(f):
+    return (f - 32) * 5/9
+
+#file 2 : main.py
+import konversi
+
+def konversi_celcius_ke_fahrenheit():
+    c = float(input("berapa suhu badan kamu dalam Celcius ?"))
+    print("berarti suhu badan mu dalam Fahreint adalah ", konversi.c_to_f(c)) 
+
+def konversi_fahrenheit_ke_celcius():
+    f = float(input("berapa suhu badan kamu dalam Fahreint? "))
+    print("berarti suhu badan mu dalam Celcius adalah ", konversi.f_to_c(f))
+
+def main():
+    print("=== Program Konversi Suhu badan kamu ===")
+    print("1. kamu mau dari Celcius ke Fahrenheit")
+    print("2. atau dari Fahrenheit ke Celcius")
+
+    pilihan = input("silahkan mau pilih menu nomor berapa (1/2): ")
+
+    if pilihan == "1":
+        konversi_celcius_ke_fahrenheit()
+    elif pilihan == "2":
+        konversi_fahrenheit_ke_celcius()
+    else:
+        print("Pilihan tidak valid")
+main()
+Footer
