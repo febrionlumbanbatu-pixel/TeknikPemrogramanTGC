@@ -1,0 +1,45 @@
+from abc import ABC, abstractmethod
+
+class Survey(ABC):
+    def __init__(self, survey_name):
+        self.survey_name = survey_name
+    
+    @abstractmethod
+    def processing(self):
+        pass
+
+class SeismicSurvey(Survey):
+    def __init__(self):
+        super().__init__("Seismic Survey")
+    
+    def processing(self):
+        return "Filtering gelombang seismik"
+
+class GravitySurvey(Survey):
+    def __init__(self):
+        super().__init__("Gravity Survey")
+    
+    def processing(self):
+        return "Upward continuation"
+
+class MagnetikSurvey(Survey):
+    def __init__(self):
+        super().__init__("Magnetik Survey")
+    
+    def processing(self):
+        return "Anomaly mapping"
+
+seismic = SeismicSurvey()
+gravity = GravitySurvey()
+magnetik = MagnetikSurvey()
+
+surveys = [seismic, gravity, magnetik]
+
+print("=" * 60)
+print("GEOPHYSICAL SURVEYS PROCESSING")
+print("=" * 60)
+
+for survey in surveys:
+    print(f"\n{survey.survey_name}")
+    print(f"Processing: {survey.processing()}")
+    print("-" * 60)
