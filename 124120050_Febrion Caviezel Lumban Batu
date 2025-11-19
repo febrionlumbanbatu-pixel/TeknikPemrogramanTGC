@@ -1,0 +1,39 @@
+lass Survey:
+    def __init__(self, lokasi, tahun):
+        self.lokasi = lokasi
+        self.tahun = tahun
+    
+    def processing(self):
+        print("- Filtering")
+        print("- Upward Continuation")
+        print("- Anomaly Mapping")
+
+
+class SeismicSurvey(Survey):
+    def __init__(self, lokasi, tahun, frekuensi):
+        super().__init__(lokasi, tahun)
+        self.frekuensi = frekuensi
+
+
+class GravitySurvey(Survey):
+    def __init__(self, lokasi, tahun, anomali):
+        super().__init__(lokasi, tahun)
+        self.anomali = anomali
+
+
+class MagnetikSurvey(Survey):
+    def __init__(self, lokasi, tahun, intensitas):
+        super().__init__(lokasi, tahun)
+        self.intensitas = intensitas
+
+
+survey1 = SeismicSurvey("Sabah Balau", 2024, 25)
+survey2 = GravitySurvey("Tanjung Karang", 2023, [45, 47, 50, 48])
+survey3 = MagnetikSurvey("Airan", 2024, [3000, 3100, 2950])
+
+daftar_survey = [survey1, survey2, survey3]
+
+for survey in daftar_survey:
+    print(f"Survey di {survey.lokasi} ({survey.tahun})")
+    survey.processing()
+    print()
