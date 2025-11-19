@@ -1,0 +1,28 @@
+ile = open('shot,receiver,twt.txt', 'r')
+lines = file.readlines()
+file.close()
+
+data = []
+for line in lines:
+    shot, receiver, twt = line.strip().split(',')
+    data.append([int(shot), int(receiver), int(twt)])
+
+twt_list = [d[2] for d in data]
+twt_min = min(twt_list)
+
+hasil = []
+for d in data:
+    try:
+        twt_norm = (d[2] - twt_min) / (600 * twt_min)
+        hasil.append([d[0], d[1], d[2], twt_norm])
+        print(f"{d[0]},{d[1]},{d[2]},{twt_norm:.4f}")
+    except:
+        print(f"Error: {d}")
+
+output = open('hasil.txt', 'w')
+output.write('shot,receiver,twt,twt_normal\n')
+for h in hasil:
+    output.write(f"{h[0]},{h[1]},{h[2]},{h[3]:.4f}\n")
+output.close()
+
+print("\nFile tersimpan di hasil.txt")
