@@ -1,0 +1,69 @@
+import streamlit as st
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from scipy.interpolate import griddata
+
+def proses_anomali(df):
+    # Regional: linear trend sederhana (misal)
+    df['regional'] = 0.05 * df['x'] + 0.02 * df['y'] + 45000
+    # Residual: total - regional
+    df['residual'] = df['t_obs'] - df['regional']
+    return df
+
+st.set_page_config(page_title="Analisis Magnetik 2D CSV", layout="wide")
+st.title("Pengolahan Data Magnetik 2D dari CSV")
+
+uploaded_file = st.file_uploader("Upload file CSV", type="csv")
+
+if uploaded_file:
+    df = pd.read_csv(uploaded_file)
+    
+    st.write("Preview data:")
+    st.dataframe(df.head())
+    
+    df = proses_anomali(df)
+    
+    st.write("Data dengan kolom Regional & Residual ditambahkan:")
+    st.dataframe(df.head())
+
+    st.sidebar.header("Pengaturan Visualisasi")
+    anomali_type = st.sidebar.selectbox("Pilih jenis anomali", ['t_obs', 'regional', 'residual'])
+    
+    cmap_option = st.sidebar.selectbox("Pilih Colormap", ['viridis', 'plasma', 'inferno', 'magma', 'cividis'])
+    
+    auto_scale = st.sidebar.radio("Mode Skala", ['Auto', 'Manual'])
+    if auto_scale == 'Manual':
+        vmin = st.sidebar.slider("vmin", float(df[anomali_type].min()), float(df[anomali_type].max()), float(df[anomali_type].min()))
+        vmax = st.sidebar.slider("vmax", float(df[anomali_type].min()), float(df[anomali_type].max()), float(df[anomali_type].max()))
+    else:
+        vmin = df[anomali_type].min()
+        vmax = df[anomali_type].max()
+    
+    flip_x = st.sidebar.checkbox("Balik Sumbu X", False)
+    trace_range = st.sidebar.slider("Pilih range X", float(df['x'].min()), float(df['x'].max()), (float(df['x'].min()), float(df['x'].max())))
+    save_plot = st.sidebar.checkbox("Simpan Plot sebagai Gambar", False)
+
+    df_plot = df[(df['x'] >= trace_range[0]) & (df['x'] <= trace_range[1])]
+    
+    if flip_x:
+        df_plot['x'] = df_plot['x'].max() - df_plot['x']
+    
+
+    grid_x, grid_y = np.mgrid[df_plot['x'].min():df_plot['x'].max():100j,
+                              df_plot['y'].min():df_plot['y'].max():100j]
+    grid_z = griddata((df_plot['x'], df_plot['y']), df_plot[anomali_type], (grid_x, grid_y), method='cubic')
+  
+    fig, ax = plt.subplots(figsize=(8,6))
+    c = ax.imshow(grid_z.T, origin='lower', cmap=cmap_option, vmin=vmin, vmax=vmax,
+                  extent=[df_plot['x'].min(), df_plot['x'].max(), df_plot['y'].min(), df_plot['y'].max()])
+    ax.set_xlabel("X")
+    ax.set_ylabel("Y")
+    ax.set_title(f"Anomali Magnetik 2D - {anomali_type}")
+    fig.colorbar(c, ax=ax, label=anomali_type)
+    
+    st.pyplot(fig)
+    
+    if save_plot:
+        fig.savefig(f"anomali_{anomali_type}.png")
+        st.success(f"Plot berhasil disimpan sebagai 'anomali_{anomali_type}.png'.")
